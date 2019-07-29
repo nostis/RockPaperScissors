@@ -1,17 +1,16 @@
 <template>
   <div id="app">
-    <img alt="Vue logo" src="./assets/logo.png">
-    <HelloWorld msg="Welcome to Your Vue.js App"/>
+    <rock-paper-scissors/>
   </div>
 </template>
 
 <script>
-import HelloWorld from './components/HelloWorld.vue'
+import RockPaperScissors from './components/RockPaperScissors.vue'
 
 export default {
   name: 'app',
   components: {
-    HelloWorld
+    RockPaperScissors,
   }
 }
 </script>
