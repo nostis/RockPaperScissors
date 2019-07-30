@@ -19,10 +19,6 @@ Route::middleware('auth:api')->get('/user', function (Request $request) {
     return $request->user();
 });
 
-Route::get('history', function() {
-    return GameHistory::all();
-});
+Route::get('history', 'GameHistoryController@all');
 
-Route::post('round', function(Request $request) {
-    return Round::create($request->all);
-});
+Route::post('round', 'RoundController@store');
