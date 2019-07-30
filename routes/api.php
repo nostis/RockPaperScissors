@@ -1,6 +1,8 @@
 <?php
 
 use Illuminate\Http\Request;
+Use App\Round;
+Use App\GameHistory;
 
 /*
 |--------------------------------------------------------------------------
@@ -15,4 +17,12 @@ use Illuminate\Http\Request;
 
 Route::middleware('auth:api')->get('/user', function (Request $request) {
     return $request->user();
+});
+
+Route::get('history', function() {
+    return GameHistory::all();
+});
+
+Route::post('round', function(Request $request) {
+    return Round::create($request->all);
 });
