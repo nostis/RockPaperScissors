@@ -17,7 +17,7 @@ class CreateRoundsTable extends Migration
             $table->bigIncrements('id');
             $table->string('user_choosed');
             $table->string('comp_choosed');
-            $table->boolean('user_won');
+            $table->integer('user_won');
             $table->integer('session_id');
             $table->timestamps();
         });
