@@ -10,37 +10,41 @@ use DB;
 class RoundController extends Controller
 {
     public function store(Request $request){
-        $lastDbId = $this->getLastSessionIdFromDb();
-        $idFromRequest = $this->getSessionIdFromRequest($request);
+        $areRoundsExist = DB::table('rounds')->get()->count();
 
-        if($idFromRequest > $lastDbId){
-            $rounds = $this->getAllRoundsHavingSameSessionId($lastDbId);
-
-            $userScore = $this->getUserScoreFromRounds($rounds);
-            $compScore = $this->getCompScoreFromRounds($rounds);
-
-            $winner = "";
-                    
-            if($userScore > $compScore){
-                $winner .= "User";
+        if($areRoundsExist){
+            $lastDbId = $this->getLastSessionIdFromDb();
+            $idFromRequest = $this->getSessionIdFromRequest($request);
+    
+            if($idFromRequest > $lastDbId){
+                $rounds = $this->getAllRoundsHavingSameSessionId($lastDbId);
+    
+                $userScore = $this->getUserScoreFromRounds($rounds);
+                $compScore = $this->getCompScoreFromRounds($rounds);
+    
+                $winner = "";
+                        
+                if($userScore > $compScore){
+                    $winner .= "User";
+                }
+                elseif($userScore < $compScore){
+                    $winner .= "Computer";
+                }
+                else{
+                    $winner .= "Draw";
+                }
+    
+                $gameHistory = new GameHistory();
+                $gameHistory->rounds = $rounds;
+                $gameHistory->user_score = $userScore;
+                $gameHistory->comp_score = $compScore;
+                $gameHistory->winner = $winner;
+    
+                $gameHistory->save();
+                DB::table('rounds')->delete();
             }
-            elseif($userScore < $compScore){
-                $winner .= "Computer";
-            }
-            else{
-                $winner .= "Draw";
-            }
-
-            $gameHistory = new GameHistory();
-            $gameHistory->rounds = $rounds;
-            $gameHistory->user_score = $userScore;
-            $gameHistory->comp_score = $compScore;
-            $gameHistory->winner = $winner;
-
-            $gameHistory->save();
-            DB::table('rounds')->delete();
         }
-
+        
         return $this->saveRound($request);
     }
 
