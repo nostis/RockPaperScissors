@@ -7,11 +7,14 @@
 <script>
 import RockPaperScissors from './components/RockPaperScissors.vue'
 
+
 export default {
   name: 'app',
   components: {
     RockPaperScissors,
-  }
+  },
+
+
 }
 </script>
 

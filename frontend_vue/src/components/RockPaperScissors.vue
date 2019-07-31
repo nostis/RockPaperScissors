@@ -4,7 +4,7 @@
             <thead>
                 <tr>
                     <td colspan="2" id="buttons">
-                        <button id="menu_1" class="ui basic button">New game</button>
+                        <button @click="newGame()" id="menu_1" class="ui basic button">New game</button>
                         <button id="menu_2" class="ui basic button">Scoreboard</button>
                     </td>
                 </tr>
@@ -16,9 +16,7 @@
                             <tbody>
                                 <tr>
                                     <td>
-                                        <p class="font">You picked Rock, computer picked Scissors, you won!</p>
-                                        <p class="font">sdfasd</p>
-                                        <p class="font">sdfasd</p>
+                                        <p v-for="round in rounds" :key="round.id">{{round}}</p>
                                     </td>
                                 </tr>
                             </tbody>
@@ -34,9 +32,9 @@
             <tfoot>
                 <tr>
                     <td colspan="2" id="buttons">
-                        <button class="ui basic button"><img id="rock" src="../assets/rock.png"></button>
-                        <button class="ui basic button"><img id="paper" src="../assets/paper.png"></button>
-                        <button class="ui basic button"><img id="scissors" src="../assets/scissors.png"></button>
+                        <button @click="move('rock')" class="ui basic button"><img id="rock" src="../assets/rock.png"></button>
+                        <button @click="move('paper')" class="ui basic button"><img id="paper" src="../assets/paper.png"></button>
+                        <button @click="move('scissors')" class="ui basic button"><img id="scissors" src="../assets/scissors.png"></button>
                     </td>
                 </tr>
             </tfoot>
@@ -46,11 +44,40 @@
 </template>
 
 <script>
+import axios from 'axios'
+
     export default {
         name: 'game',
-        props: {
-            history: Array,
+        prop: {
+            rounds: Array,
+            sessionId: Number,
         },
+
+        data() {
+            return {
+                rounds: [],
+                sessionId: 0,
+            }
+        },
+
+        methods: {
+            async move(kindOfMove) {
+                const response = await axios.post('http://localhost/api/round', {
+                    user_choosed : kindOfMove,
+                    session_id : this.sessionId
+                })
+
+                this.rounds = [...this.rounds, response.data]
+            },
+
+            newGame() {
+                this.sessionId++
+                this.rounds = []
+
+                //need to perform put? to save records in queue(rounds)
+            }
+        }
+
     }
 </script>
 
