@@ -4,14 +4,41 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Round;
+use App\GameHistory;
 use DB;
 
 class RoundController extends Controller
 {
     public function store(Request $request){
+        $lastDbId = $this->getLastSessionIdFromDb();
+        $idFromRequest = $this->getSessionIdFromRequest($request);
 
-        if($this->getSessionIdFromRequest($request) > $this->getLastSessionIdFromDb()){
-            //construct gameHistory;
+        if($idFromRequest > $lastDbId){
+            $rounds = $this->getAllRoundsHavingSameSessionId($lastDbId);
+
+            $userScore = $this->getUserScoreFromRounds($rounds);
+            $compScore = $this->getCompScoreFromRounds($rounds);
+
+            $winner = "";
+                    
+            if($userScore > $compScore){
+                $winner .= "User";
+            }
+            elseif($userScore < $compScore){
+                $winner .= "Computer";
+            }
+            else{
+                $winner .= "Draw";
+            }
+
+            $gameHistory = new GameHistory();
+            $gameHistory->rounds = $rounds;
+            $gameHistory->user_score = $userScore;
+            $gameHistory->comp_score = $compScore;
+            $gameHistory->winner = $winner;
+
+            $gameHistory->save();
+            DB::table('rounds')->delete();
         }
 
         return $this->saveRound($request);
@@ -87,7 +114,6 @@ class RoundController extends Controller
         }
         else{
             $score = "draw!";
-            $isWin = true;
             $isWin = 0;
         }
 
@@ -107,5 +133,33 @@ class RoundController extends Controller
 
     private function getSessionIdFromRequest(Request $request){
         return $request['session_id'];
+    }
+
+    private function getAllRoundsHavingSameSessionId($id){
+        return DB::table('rounds')->where('session_id', $id)->get();
+    }
+
+    private function getUserScoreFromRounds($rounds){
+        $score = 0;
+
+        foreach($rounds as $r){
+            if($r->user_won == 1){
+                $score++;
+            }
+        }
+
+        return $score;
+    }
+
+    private function getCompScoreFromRounds($rounds){
+        $score = 0;
+
+        foreach($rounds as $r){
+            if($r->user_won == -1){
+                $score++;
+            }
+        }
+
+        return $score;
     }
 }
