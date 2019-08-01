@@ -1,17 +1,31 @@
 <template>
   <div id="app">
-    <rock-paper-scissors/>
+    <component v-bind:is="currentComp" ref={currentComp}></component>
   </div>
 </template>
 
 <script>
-import RockPaperScissors from './components/RockPaperScissors.vue'
-
+import MainComp from './components/MainComp.vue'
+import Scoreboard from './components/Scoreboard.vue'
 
 export default {
   name: 'app',
+  
+  data() {
+    return {
+      currentComp : 'main-comp',
+    }
+  },
+
   components: {
-    RockPaperScissors,
+    'main-comp' : MainComp,
+    'scoreboard' : Scoreboard,
+  },
+
+  methods: {
+    swapComponent(comp) {
+      this.currentComp = comp
+    }
   },
 
 

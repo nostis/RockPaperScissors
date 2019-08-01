@@ -24,3 +24,5 @@ Route::get('history', 'GameHistoryController@all');
 Route::post('round', 'RoundController@store');
 
 Route::put('round', 'RoundController@update');
+
+Route::get('score', 'ScoreController@get');

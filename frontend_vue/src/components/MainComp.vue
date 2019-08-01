@@ -5,7 +5,7 @@
                 <tr>
                     <td colspan="2" id="buttons">
                         <button @click="newGame()" id="menu_1" class="ui basic button">New game</button>
-                        <button id="menu_2" class="ui basic button">Scoreboard</button>
+                        <button @click="swap('scoreboard')" id="menu_2" class="ui basic button">Scoreboard</button>
                     </td>
                 </tr>
             </thead>
@@ -24,8 +24,8 @@
                     </td>
                     <td valign="top" id="smaller">
                         <p class="font">Actual score:</p>
-                        <p class="font">Computer: 0</p>
-                        <p class="font">You: 0</p>
+                        <p class="font">You: {{this.userScore}}</p>
+                        <p class="font">Computer: {{this.compScore}}</p>
                     </td>
                 </tr>
             </tbody>
@@ -51,13 +51,21 @@ import axios from 'axios'
         prop: {
             rounds: Array,
             sessionId: Number,
+            userScore: Number,
+            compScore: Number,
         },
 
         data() {
             return {
                 rounds: [],
                 sessionId: 0,
+                userScore: 0,
+                compScore: 0,
             }
+        },
+
+        beforeCreate: function() {
+            this.newGame()
         },
 
         methods: {
@@ -68,16 +76,40 @@ import axios from 'axios'
                 })
 
                 this.rounds = [...this.rounds, response.data]
+
+                this.updateScore()
             },
 
-            async newGame() {
+            newGame() {
                 this.sessionId++
-                this.rounds = []
 
+                this.clearGame()
+                this.updateData()
+            },
+
+            async updateScore() {
+                const response = await axios.get('http://localhost/api/score')
+
+                this.userScore = response.data['user_score']
+                this.compScore = response.data['comp_score']
+            },
+
+            swap(comp) {
+                this.newGame()
+                this.$root.$emit('scoreboard')
+                this.$parent.swapComponent(comp)
+            },
+
+            async updateData() {
                 await axios.put('http://localhost/api/round', {
                     session_id: this.sessionId
                 })
-                //need to perform put? to save records in queue(rounds)
+            },
+
+            clearGame() {
+                this.rounds = []
+                this.userScore = 0
+                this.compScore = 0
             }
         }
 
