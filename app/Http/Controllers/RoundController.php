@@ -10,6 +10,10 @@ use DB;
 class RoundController extends Controller
 {
     public function store(Request $request){
+        return $this->saveRound($request);
+    }
+
+    public function update(Request $request){
         $areRoundsExist = DB::table('rounds')->get()->count();
 
         if($areRoundsExist){
@@ -42,10 +46,10 @@ class RoundController extends Controller
     
                 $gameHistory->save();
                 DB::table('rounds')->delete();
+
+                return response()->json([], 201);
             }
         }
-        
-        return $this->saveRound($request);
     }
 
     private function saveRound(Request $request){

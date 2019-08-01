@@ -22,3 +22,5 @@ Route::middleware('auth:api')->get('/user', function (Request $request) {
 Route::get('history', 'GameHistoryController@all');
 
 Route::post('round', 'RoundController@store');
+
+Route::put('round', 'RoundController@update');

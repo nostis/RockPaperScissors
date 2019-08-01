@@ -70,10 +70,13 @@ import axios from 'axios'
                 this.rounds = [...this.rounds, response.data]
             },
 
-            newGame() {
+            async newGame() {
                 this.sessionId++
                 this.rounds = []
 
+                await axios.put('http://localhost/api/round', {
+                    session_id: this.sessionId
+                })
                 //need to perform put? to save records in queue(rounds)
             }
         }
