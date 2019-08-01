@@ -52,7 +52,7 @@ import axios from 'axios'
             },
 
             async getHistory() {
-                const fetchedHistory = await axios.get('http://localhost/api/history')
+                const fetchedHistory = await axios.get('http://localhost:8888/api/history')
                 
                 for(let i = 0; i < fetchedHistory.data.length; i++){
 

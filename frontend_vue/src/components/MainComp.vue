@@ -70,7 +70,7 @@ import axios from 'axios'
 
         methods: {
             async move(kindOfMove) {
-                const response = await axios.post('http://localhost/api/round', {
+                const response = await axios.post('http://localhost:8888/api/round', {
                     user_choosed : kindOfMove,
                     session_id : this.sessionId
                 })
@@ -88,7 +88,7 @@ import axios from 'axios'
             },
 
             async updateScore() {
-                const response = await axios.get('http://localhost/api/score')
+                const response = await axios.get('http://localhost:8888/api/score')
 
                 this.userScore = response.data['user_score']
                 this.compScore = response.data['comp_score']
@@ -101,7 +101,7 @@ import axios from 'axios'
             },
 
             async updateData() {
-                await axios.put('http://localhost/api/round', {
+                await axios.put('http://localhost:8888/api/round', {
                     session_id: this.sessionId
                 })
             },
