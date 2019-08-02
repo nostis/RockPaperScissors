@@ -64,10 +64,6 @@ import axios from 'axios'
             }
         },
 
-        beforeCreate: function() {
-            this.newGame()
-        },
-
         methods: {
             async move(kindOfMove) {
                 const response = await axios.post('http://localhost:8888/api/round', {
@@ -96,7 +92,6 @@ import axios from 'axios'
 
             swap(comp) {
                 this.newGame()
-                this.$root.$emit('scoreboard')
                 this.$parent.swapComponent(comp)
             },
 
